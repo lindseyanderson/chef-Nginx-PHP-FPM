@@ -1,0 +1,58 @@
+<% year = Time.new.strftime("%Y") %>
+# Basic Nginx server block template with PHP FPM enabled
+server {
+        listen <%= @site_name['http_port'] %>;
+        server_name <%= @site_name['server_name'] %> www.<%= @site_name['server_name'] %>;
+
+        root <%= @site_name['document_root'] %>;
+
+        location / {
+                index index.php;
+        }
+
+        # Note the php-fpm is set to a UNIX socket,
+        # please ensure your php-fpm is set to listen here
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info <%= "^(.+\.php)(/.+)$" %>;
+                fastcgi_pass unix://<%= node["php-fpm"]["pools"][0] %>;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME
+                $document_root$fastcgi_script_name;
+                include fastcgi_params;
+        }
+
+        location ~ /\.ht {
+                deny all;
+        }
+        access_log /var/log/nginx/<%= @site_name['server_name'] %>-access.log;
+
+        # Prevent 0day overflow
+        if ($http_transfer_encoding ~* chunked) {
+                return 444;
+        }
+}
+
+#server {
+#        listen <%= @site_name['http_port'] %>;
+#
+#        server_name www.;
+#        rewrite ^ http://<%= @site_name['server_name'] %>$request_uri? permanent; %>
+# }
+
+# When enabling an SSL certificate in Nginx, to provide a CA Chain
+# simply combine the certificate and CA chain through the following:
+#
+# cat 2013-<%= @site_name['server_name'] %>.crt <%= year %>-<%= @site_name['server_name'] %>.CA.crt > \
+#   2013-<%= @site_name['server_name'] %>.chained.crt
+#
+
+#server {
+#       listen <%= @site_name['https_port'] %>;
+#       ssl on;
+#       ssl_certificate /etc/pki/tls/certs/<%= year %>-<%= @site_name['server_name'] %>.chained.crt;
+#       ssl_certificate_key /etc/pki/tls/private/<%= year %>-<%= @site_name['server_name'] %>.key;
+#       keepalive_timeout 10;
+#       rewrite ^ http://<%= @site_name['server_name'] %>\$request_uri? permanent;
+# }
+

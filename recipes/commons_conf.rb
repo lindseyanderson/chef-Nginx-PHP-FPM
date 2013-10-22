@@ -39,3 +39,16 @@ end
 nginx_site 'default' do
   enable node['nginx']['default_site_enabled']
 end
+
+unless node['nginx']['default_site_enabled']
+  node['nginx']['site_list'].each do |site_title|
+    template "#{node['nginx']['dir']}/sites-available/#{site_name['server_name']}" do
+      source 'server-block.erb'
+      owner  'root'
+      group  'root' 
+      mode   '0664'
+      
+      notifies :reload, 'service[nginx]'
+    end
+  end
+end
