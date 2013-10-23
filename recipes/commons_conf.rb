@@ -41,14 +41,22 @@ nginx_site 'default' do
 end
 
 unless node['nginx']['default_site_enabled']
-  node['nginx']['site_list'].each do |site_title|
-    template "#{node['nginx']['dir']}/sites-available/#{site_name['server_name']}" do
+  node['nginx']['site_list'].each do |key, site_title|
+    template "#{node['nginx']['dir']}/sites-available/#{site_title['server_name']}" do
       source 'server-block.erb'
       owner  'root'
       group  'root' 
       mode   '0664'
+      variables ({
+        :site_name => site_title[:server_name],
+        :http_port => site_title[:http_port],
+        :https_port => site_title[:https_port],
+        :document_root => site_title[:document_root]
+      })
       
       notifies :reload, 'service[nginx]'
     end
+
+    nginx_site "#{site_title['server_name']}
   end
 end
