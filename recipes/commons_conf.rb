@@ -51,7 +51,8 @@ unless node['nginx']['default_site_enabled']
         :site_name => site_title["server_name"],
         :http_port => site_title["http_port"],
         :https_port => site_title["https_port"],
-        :document_root => site_title["document_root"]
+        :document_root => site_title["document_root"],
+        :php_listen => node["php-fpm"]["pool"]["www"]["listen"]
       })
       
       notifies :reload, 'service[nginx]'

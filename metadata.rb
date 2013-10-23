@@ -14,6 +14,7 @@ depends 'build-essential', '~> 1.4'
 depends 'ohai',            '~> 1.1'
 depends 'runit',           '~> 1.2'
 depends 'yum',             '~> 2.3'
+depends 'php-fpm'
 
 supports 'amazon'
 supports 'centos'
@@ -107,7 +108,7 @@ attribute 'nginx/disable_access_log',
 
 attribute 'nginx/default_site_enabled',
   :display_name => 'Default site enabled',
-  :default => 'true'
+  :default => 'false'
 
 attribute 'nginx/sendfile',
   :display_name => 'Nginx sendfile',
