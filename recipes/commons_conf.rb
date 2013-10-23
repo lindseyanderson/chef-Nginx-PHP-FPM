@@ -48,15 +48,15 @@ unless node['nginx']['default_site_enabled']
       group  'root' 
       mode   '0664'
       variables ({
-        :site_name => site_title[:server_name],
-        :http_port => site_title[:http_port],
-        :https_port => site_title[:https_port],
-        :document_root => site_title[:document_root]
+        :site_name => site_title["server_name"],
+        :http_port => site_title["http_port"],
+        :https_port => site_title["https_port"],
+        :document_root => site_title["document_root"]
       })
       
       notifies :reload, 'service[nginx]'
     end
 
-    nginx_site "#{site_title['server_name']}
+    nginx_site "#{site_title['server_name']}"
   end
 end

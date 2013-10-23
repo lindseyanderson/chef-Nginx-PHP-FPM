@@ -2,7 +2,7 @@
 # Basic Nginx server block template with PHP FPM enabled
 server {
         listen <%= @http_port %>;
-        server_name <%= @server_name %> www.<%= @server_name %>;
+        server_name <%= @site_name %> www.<%= @site_name %>;
 
         root <%= @document_root %>;
 
@@ -15,7 +15,7 @@ server {
         location ~ \.php$ {
                 try_files $uri =404;
                 fastcgi_split_path_info <%= "^(.+\.php)(/.+)$" %>;
-                fastcgi_pass unix://<%= node["php-fpm"]["pools"][0] %>;
+                fastcgi_pass unix://<%= node["php-fpm"]["pools"]["www"]["listen"] %>;
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME
                 $document_root$fastcgi_script_name;
@@ -25,7 +25,7 @@ server {
         location ~ /\.ht {
                 deny all;
         }
-        access_log /var/log/nginx/<%= @server_name %>-access.log;
+        access_log /var/log/nginx/<%= @site_name %>-access.log;
 
         # Prevent 0day overflow
         if ($http_transfer_encoding ~* chunked) {
@@ -37,22 +37,22 @@ server {
 #        listen <%= @http_port %>;
 #
 #        server_name www.;
-#        rewrite ^ http://<%= @server_name %>$request_uri? permanent; %>
+#        rewrite ^ http://<%= @site_name %>$request_uri? permanent; %>
 # }
 
 # When enabling an SSL certificate in Nginx, to provide a CA Chain
 # simply combine the certificate and CA chain through the following:
 #
-# cat 2013-<%= @server_name %>.crt <%= year %>-<%= @server_name %>.CA.crt > \
-#   2013-<%= @server_name %>.chained.crt
+# cat 2013-<%= @site_name %>.crt <%= year %>-<%= @site_name %>.CA.crt > \
+#   2013-<%= @site_name %>.chained.crt
 #
 
 #server {
 #       listen <%= @https_port %>;
 #       ssl on;
-#       ssl_certificate /etc/pki/tls/certs/<%= year %>-<%= @server_name %>.chained.crt;
-#       ssl_certificate_key /etc/pki/tls/private/<%= year %>-<%= @server_name %>.key;
+#       ssl_certificate /etc/pki/tls/certs/<%= year %>-<%= @site_name %>.chained.crt;
+#       ssl_certificate_key /etc/pki/tls/private/<%= year %>-<%= @site_name %>.key;
 #       keepalive_timeout 10;
-#       rewrite ^ http://<%= @server_name %>\$request_uri? permanent;
+#       rewrite ^ http://<%= @site_name %>\$request_uri? permanent;
 # }
 
