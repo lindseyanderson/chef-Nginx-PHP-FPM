@@ -36,7 +36,7 @@ server {
 #server {
 #        listen <%= @http_port %>;
 #
-#        server_name www.;
+#        server_name www.<%= @site_name %>;
 #        rewrite ^ http://<%= @site_name %>$request_uri? permanent; %>
 # }
 
