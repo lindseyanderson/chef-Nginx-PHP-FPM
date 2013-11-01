@@ -58,7 +58,7 @@ unless node['nginx']['default_site_enabled']
       notifies :reload, 'service[nginx]'
     end
 
+    directory  "#{site_title['document_root']}" 
     nginx_site "#{site_title['server_name']}"
-    directory "#{site_title['document_root']}" 
   end
 end
