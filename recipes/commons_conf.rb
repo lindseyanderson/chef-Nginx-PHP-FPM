@@ -59,11 +59,11 @@ unless node['nginx']['default_site_enabled']
     end
 
     directory  "#{site_title['document_root']}" do
-      recursive true
-      mode 00775
+      mode  '0775'
       owner "root"
       group "nginx"
-      action: create
+      action :create
+      recursive true
     end
     nginx_site "#{site_title['server_name']}"
   end
