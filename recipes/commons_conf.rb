@@ -58,7 +58,10 @@ unless node['nginx']['default_site_enabled']
       notifies :reload, 'service[nginx]'
     end
 
-    directory  "#{site_title['document_root']}" 
+    directory  "#{site_title['document_root']}" do
+      recursive: true
+      action: create
+    end
     nginx_site "#{site_title['server_name']}"
   end
 end
