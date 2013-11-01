@@ -59,10 +59,6 @@ unless node['nginx']['default_site_enabled']
     end
 
     nginx_site "#{site_title['server_name']}"
-    directory "#{site_title['document_root']}" do
-      owner: "root"
-      mode "0775"
-      action: create
-    end
+    directory "#{site_title['document_root']}" 
   end
 end
